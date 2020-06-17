@@ -71,16 +71,20 @@ DeliveryResult PointToPointRouterImpl::generatePointToPointRoute(
         
         if (current == end)
         {
+            totalDistanceTravelled = 0;
             GeoCoord curr = end;
             GeoCoord* prev = came_from.find(curr);
-            while(prev!=nullptr)
+            while(prev!=nullptr && *prev != start)
             {
                 vector<StreetSegment> temp;
                 m_map->getSegmentsThatStartWith(*prev, temp);
                 for(int i = 0; i < temp.size(); i++)
                 {
                     if(temp[i].end == curr)
+                    {
                         route.push_front(temp[i]);
+                        totalDistanceTravelled += distanceEarthMiles(*prev, curr);
+                    }
                 }
                 curr = *prev;
                 prev = came_from.find(curr);
